@@ -13,11 +13,11 @@ jobs:
       - name: Check out
         uses: actions/checkout@v2
       - name: Install some important files
-        run: yarn global add @semantic-release/changelog
+        run: yarn add -D semantic-release @semantic-release/changelog
       - name: Run the semantic versioning
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
-        run: "npx semantic-release --branches ['master', {'name': 'staging', 'prerelease': true}]"
+        run: "yarn semantic-release --branches ['master', {'name': 'staging', 'prerelease': true}]"
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Version Bump
