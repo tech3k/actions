@@ -83,7 +83,7 @@ jobs:
           args: deploy
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_STAGING_ID }}
+          NETLIFY_SITE_ID: ${{ (github.ref_name === 'main' && secrets.NETLIFY_SITE_STAGING_ID) || secrets.NETLIFY_SITE_STAGING_ID }}
       - name: Update Deployment Status
         if: ${{ success() }}
         id: deployment_status
