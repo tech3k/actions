@@ -15,7 +15,7 @@ jobs:
       - name: Run the semantic versioning
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
-        run: "npx semantic-release --branches ['master', {name: 'staging', prerelease: true}]"
+        run: "npx semantic-release --branches ['master', {'name': 'staging', 'prerelease': true}]"
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Version Bump
