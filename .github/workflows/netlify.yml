@@ -1,6 +1,10 @@
 name: Netlify Deployment
 on:
   workflow_call:
+    inputs:
+      URL:
+        required: true
+        type: string
     secrets:
       NETLIFY_AUTH_TOKEN:
         required: true
@@ -83,4 +87,4 @@ jobs:
       - name: Update Deployment Status
         if: ${{ success() }}
         id: deployment_status
-        run: echo "::set-output name=url::${{ (github.event_name != 'pull_request_target' && steps.netlify.outputs.NETLIFY_LIVE_URL) || steps.netlify.outputs.NETLIFY_URL }}"
+        run: echo "::set-output name=url::${{ (github.ref_name != 'main' && 'https://${{ inputs.URL }}') || (github.event_name != 'pull_request_target' && 'https://staging.${{ inputs.URL }}') || steps.netlify.outputs.NETLIFY_URL }}"
