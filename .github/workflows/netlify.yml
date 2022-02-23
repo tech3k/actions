@@ -68,6 +68,7 @@ jobs:
       name: Deploy
       url: ${{ steps.deployment_status.outputs.url }}
     needs:
+      - Setup
       - Test
       - Build
     steps:
