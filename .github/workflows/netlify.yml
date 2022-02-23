@@ -27,6 +27,7 @@ jobs:
   Test:
     name: Run all tests
     runs-on: ubuntu-latest
+    needs: Setup
     steps:
       - uses: actions/cache@v2
         with:
@@ -38,6 +39,21 @@ jobs:
   Build:
     name: Build Website
     runs-on: ubuntu-latest
+    needs: Setup
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: ~/
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Build
+        run: yarn build:static
+
+  Publish:
+    name: Build Website
+    runs-on: ubuntu-latest
+    needs:
+      - Test
+      - Build
     steps:
       - uses: actions/cache@v2
         with:
