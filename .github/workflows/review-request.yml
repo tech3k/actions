@@ -1,0 +1,76 @@
+name: Review Request
+on:
+  workflow_call:
+    secrets:
+      PAT:
+        required: true
+      SLACK_WEBHOOK_URL:
+        required: true
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PAT }}
+
+jobs:
+  Request:
+    name: Request reviews on PRs when ready for review
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set the PR to auto merge
+        run: |
+          gh pr merge ${{ github.event.pull_request.html_url }} \
+              -s --auto
+      - name: Create PR review request
+        run: |
+          gh pr edit ${{ github.event.pull_request.html_url }} \
+              --add-reviewer ${GITHUB_REPOSITORY#*/}/review
+  Notify:
+    name: Send a notification to request a review
+    needs: Request
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Send review request to slack
+        id: slack
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          payload: |
+            {
+              "text": "Review requested by ${{ github.event.pull_request.user.login }} on pull request",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Review requested by <${{ github.event.pull_request.user.url }}|${{ github.event.pull_request.user.login }}> on pull request"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*<${{ github.event.pull_request.html_url }}|${{ github.event.pull_request.title }} #${{ github.event.pull_request.number }}>*"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ${{ toJSON(github.event.pull_request.body) }}
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "<https://github.com/${{ github.repository }}|${{ github.repository }}>"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
