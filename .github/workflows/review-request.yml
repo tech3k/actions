@@ -12,7 +12,6 @@ env:
 
 jobs:
   Request:
-    name: Request reviews on PRs when ready for review
     runs-on: ubuntu-20.04
     steps:
       - name: Set the PR to auto merge
@@ -24,7 +23,6 @@ jobs:
           gh pr edit ${{ github.event.pull_request.html_url }} \
               --add-reviewer ${GITHUB_REPOSITORY#*/}/review
   Notify:
-    name: Send a notification to request a review
     needs: Request
     runs-on: ubuntu-20.04
     steps:
