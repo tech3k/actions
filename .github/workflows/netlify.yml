@@ -1,5 +1,13 @@
 name: Netlify Deployment
-on: workflow_call
+on:
+  workflow_call:
+    secrets:
+      NETLIFY_AUTH_TOKEN:
+        required: true
+      NETLIFY_SITE_ID:
+        required: true
+      NETLIFY_SITE_STAGING_ID:
+        required: true
 
 jobs:
   Setup:
@@ -56,6 +64,9 @@ jobs:
   Publish:
     name: Publish to Netlify
     runs-on: ubuntu-latest
+    environment:
+      name: Deploy
+      url: ${{ steps.deployment_status.outputs.url }}
     needs:
       - Test
       - Build
@@ -64,5 +75,15 @@ jobs:
         with:
           path: ./**/*
           key: ${{ needs.Setup.outputs.cachepath }}
-      - name: Build
-        run: yarn build
+      - name: Publish
+        id: netlify
+        uses: netlify/actions/cli@master
+        with:
+          args: deploy
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_STAGING_ID }}
+      - name: Update Deployment Status
+        if: ${{ success() }}
+        id: deployment_status
+        run: echo "::set-output name=url::${{ steps.netlify.outputs.NETLIFY_URL }}"
