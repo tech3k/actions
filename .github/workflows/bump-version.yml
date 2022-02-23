@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v2
+      - name: Install some important files
+        run: yarn add -G @semantic-release/changelog
       - name: Run the semantic versioning
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
