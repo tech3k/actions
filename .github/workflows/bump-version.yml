@@ -15,8 +15,8 @@ jobs:
       - name: Install some important files
         run: yarn add -D semantic-release @semantic-release/changelog @semantic-release/git
       - name: Run the semantic versioning
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.PAT }}
         run: yarn semantic-release
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
