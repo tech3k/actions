@@ -12,12 +12,11 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v2
-      - name: Install some important files
-        run: yarn add -D semantic-release @semantic-release/changelog @semantic-release/git
-      - name: Run the semantic versioning
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.PAT }}
-        run: yarn semantic-release
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
         with:
-          commit_message: Version Bump
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
