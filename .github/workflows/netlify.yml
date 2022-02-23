@@ -12,7 +12,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/
-          key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Checkout Latest Version
         if: ${{ github.event_name != 'pull_request_target' }}
         uses: actions/checkout@v2
@@ -32,7 +34,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/
-          key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Test
         run: yarn test
 
@@ -44,7 +48,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/
-          key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Build
         run: yarn build
 
