@@ -24,7 +24,7 @@ jobs:
         run: echo "::set-output name=cachepath::${{ runner.os }}-${{ github.sha }}-${{ github.run_attempt }}-yarn-${{ hashFiles('**/yarn.lock') }}"
       - uses: actions/cache@v2
         with:
-          path: ./
+          path: .
           key: ${{ steps.generate_cache_path.outputs.cachepath }}
       - name: Install Dependencies
         run: yarn install
@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/cache@v2
         with:
-          path: ./
+          path: .
           key: ${{ needs.Setup.outputs.cachepath }}
       - name: Test
         run: yarn test
@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/cache@v2
         with:
-          path: ./
+          path: .
           key: ${{ needs.Setup.outputs.cachepath }}
       - name: Build
         run: yarn build
@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: actions/cache@v2
         with:
-          path: ./
+          path: .
           key: ${{ needs.Setup.outputs.cachepath }}
       - name: Build
         run: yarn build
