@@ -63,7 +63,7 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ (github.ref_name == 'main' && 'Production') || 'Staging' }}
+      name: ${{ (github.ref_name == 'main' && 'Production') || (github.event_name != 'pull_request_target' && 'Staging') || 'Preview' }}
       url: ${{ steps.deployment_status.outputs.url }}
     needs:
       - Setup
