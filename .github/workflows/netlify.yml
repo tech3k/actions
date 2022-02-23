@@ -87,4 +87,4 @@ jobs:
       - name: Update Deployment Status
         if: ${{ success() }}
         id: deployment_status
-        run: echo "::set-output name=url::${{ (github.ref_name == 'main' && format('https://{0}', inputs.NETLIFY_URL)) || (github.event_name != 'pull_request_target' && format('https://staging.{0}', inputs.NETLIFY_URL)) || steps.netlify.outputs.NETLIFY_URL }}"
+        run: echo "::set-output name=url::${{ (github.ref_name == 'main' && format('https://{0}', inputs.NETLIFY_URL)) || ((github.event_name != 'pull_request_target' && github.event_name != 'pull_request') && format('https://staging.{0}', inputs.NETLIFY_URL)) || steps.netlify.outputs.NETLIFY_URL }}"
