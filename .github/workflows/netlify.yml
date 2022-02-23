@@ -1,0 +1,23 @@
+name: Netlify Deployment
+on: workflow_call
+
+jobs:
+  Setup:
+    name: Setup Repository
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') ||
+      (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]')
+    steps:
+      - name: Checkout Latest Version
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: actions/checkout@v2
+
+      - name: Checkout Latest Version (PR)
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install Dependencies
+        run: yarn install
