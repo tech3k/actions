@@ -21,7 +21,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Generate Cache Path
         id: generate_cache_path
-        run: echo "::set-output name=cachepath::${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}"
+        run: echo "::set-output name=cachepath::${{ runner.os }}-${{ github.sha }}-${{ github.run_attempt }}-yarn-${{ hashFiles('**/yarn.lock') }}"
       - uses: actions/cache@v2
         with:
           path: ~/
