@@ -9,14 +9,16 @@ on:
 
 jobs:
   BumpVersion:
-    if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out
+        if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
         uses: actions/checkout@v2
         env:
+          persist-credentials: false
           GITHUB_TOKEN: ${{ secrets.PAT }}
       - name: Semantic Release
+        if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
         uses: cycjimmy/semantic-release-action@v2
         with:
           branches: |
