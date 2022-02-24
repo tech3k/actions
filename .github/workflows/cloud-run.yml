@@ -110,15 +110,19 @@ jobs:
           service_account_key: ${{ env.RUN_SA_KEY }}
           project_id: ${{ env.PROJECT_ID }}
       - name: Deploy
-        run: |-
-          gcloud run deploy "${{ env.SERVICE_NAME }}" \
-            --quiet \
-            --region "${{ env.RUN_REGION }}" \
-            --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" \
-            --platform "managed" \
-            --allow-unauthenticated
+        uses: mathiasvr/command-output@v1
+        id: deploy
+        with:
+          run: |-
+            gcloud run deploy "${{ env.SERVICE_NAME }}" \
+              --quiet \
+              --region "${{ env.RUN_REGION }}" \
+              --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" \
+              --platform "managed" \
+              --allow-unauthenticated
       - name: OutputUrl
-        run: CLOUD_URL=$(echo "${{ steps.Deploy.outputs }}" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && echo "::set-output name=CLOUD_URL::$CLOUD_URL"
+        run: echo ${{ steps.deploy.outputs }}
+        # run: CLOUD_URL=$(echo "${{ steps.deploy.outputs }}" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && echo "::set-output name=CLOUD_URL::$CLOUD_URL"
 
   Skip:
     runs-on: ubuntu-latest
