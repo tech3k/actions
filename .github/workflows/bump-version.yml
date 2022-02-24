@@ -8,7 +8,12 @@ on:
         required: false
 
 jobs:
-  BumpVersion:
+  Skip:
+    if: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Skipping Version Bumping since we're in a pull request"
+  Bump:
     if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     runs-on: ubuntu-latest
     steps:
