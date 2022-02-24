@@ -115,10 +115,12 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
           tag: ${{ steps.timestamp.outputs.timestamp }}
-          no_traffic: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
-          tag_traffic: ${{ ((github.event_name == 'pull_request_target' || github.event_name == 'pull_request') && format('{0}=0', steps.timestamp.outputs.timestamp)) || format('{0}=100', steps.timestamp.outputs.timestamp) }}
+          no_traffic: true
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.RUN_REGION }}
           image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}'
       - name: Make Public
         run: gcloud run services add-iam-policy-binding ${{ env.SERVICE_NAME }} --region="${{ env.RUN_REGION }}" --member="allUsers" --role="roles/run.invoker"
+      - name: Send Traffic
+        if: (github.event_name != 'pull_request_target' && github.event_name != 'pull_request')
+        run: gcloud run services update-traffic ${{ env.SERVICE_NAME }} --region="${{ env.RUN_REGION }}" --to-tags ${{ steps.timestamp.outputs.timestamp }}=100
