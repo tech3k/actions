@@ -4,6 +4,8 @@ on:
     secrets:
       PAT:
         required: true
+      NPM_TOKEN:
+        required: false
 
 jobs:
   BumpVersion:
@@ -30,4 +32,7 @@ jobs:
             @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
-          NPM_TOKEN: 000000000000
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Version Bump
