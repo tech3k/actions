@@ -105,7 +105,7 @@ jobs:
     steps:
       - name: Timestamp
         id: timestamp
-        run: echo "::set-output name=timestamp::$(date +%s)"
+        run: echo "::set-output name=timestamp::t$(date +%s)"
       - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ env.RUN_SA_KEY }}
