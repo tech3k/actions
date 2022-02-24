@@ -64,7 +64,6 @@ jobs:
 
   Build:
     runs-on: ubuntu-latest
-    if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     needs:
       - Setup
       - Test
@@ -90,7 +89,6 @@ jobs:
             --tag "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}"
   Deploy:
     runs-on: ubuntu-latest
-    if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     environment:
       name: ${{ (github.ref_name == 'main' && 'Production') || ((github.event_name != 'pull_request_target' && github.event_name != 'pull_request') && 'Staging') || 'Preview' }}
       url: ${{ steps.deploy.outputs.url }}
@@ -113,18 +111,9 @@ jobs:
         id: deploy
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
+          no_traffic: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.RUN_REGION }}
           image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}'
       - name: Make Public
         run: gcloud run services add-iam-policy-binding ${{ env.SERVICE_NAME }} --member="allUsers" --role="roles/run.invoker"
-
-  Skip:
-    runs-on: ubuntu-latest
-    if: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
-    needs:
-      - Setup
-      - Test
-      - Lint
-    steps:
-      - run: echo "Deployment skipped as we are in a pull request"
