@@ -103,6 +103,9 @@ jobs:
       SERVICE_NAME: ${{ inputs.SERVICE_NAME || github.event.repository.name }}
       RUN_SA_KEY: ${{ secrets.RUN_SA_KEY }}
     steps:
+      - name: Timestamp
+        id: timestamp
+        run: echo "::set-output name=timestamp::$(date +%s)"
       - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ env.RUN_SA_KEY }}
@@ -111,7 +114,7 @@ jobs:
         id: deploy
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
-          tag: ${{ (date +%s) }}
+          tag: ${{ steps.timestamp.outputs.timestamp }}
           no_traffic: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.RUN_REGION }}
