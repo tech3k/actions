@@ -121,8 +121,8 @@ jobs:
               --platform "managed" \
               --allow-unauthenticated
       - name: OutputUrl
-        # run: echo ${{ steps.deploy.outputs.stdout }}
-        run: CLOUD_URL=$(echo "${{ steps.deploy.outputs.stdout }}" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && echo "::set-output name=CLOUD_URL::$CLOUD_URL"
+        run: echo ${{ steps.deploy.outputs.stdout }}
+        # run: CLOUD_URL=$(echo "${{ steps.deploy.outputs.stdout }}" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && echo "::set-output name=CLOUD_URL::$CLOUD_URL"
 
   Skip:
     runs-on: ubuntu-latest
