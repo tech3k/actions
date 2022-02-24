@@ -101,7 +101,7 @@ jobs:
       - Setup
       - Test
       - Lint
-      - Deploy
+      - Build
     env:
       PROJECT_ID: ${{ (github.ref_name == 'main' && secrets.RUN_PROJECT_PRODUCTION) || secrets.RUN_PROJECT_STAGING }}
       RUN_REGION: europe-west2
