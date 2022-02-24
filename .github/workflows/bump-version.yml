@@ -27,11 +27,8 @@ jobs:
                 prerelease: true
               }
             ]
-          extra_plugins: |
-            @semantic-release/changelog
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-            @semantic-release/git
+          extends: |
+            semantic-release-npm-github-publish
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
