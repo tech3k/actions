@@ -116,4 +116,4 @@ jobs:
           region: ${{ env.RUN_REGION }}
           image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}'
       - name: Make Public
-        run: gcloud run services add-iam-policy-binding ${{ env.SERVICE_NAME }} --member="allUsers" --role="roles/run.invoker"
+        run: gcloud run services add-iam-policy-binding ${{ env.SERVICE_NAME }} --region="${{ env.RUN_REGION }}" --member="allUsers" --role="roles/run.invoker"
