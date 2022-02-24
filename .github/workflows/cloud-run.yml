@@ -87,7 +87,7 @@ jobs:
         run: |-
           gcloud builds submit \
             --quiet \
-            --tag "gcr.io/$PROJECT_ID/${{ env.SERVICE_NAME }}:${{ github.sha }}"
+            --tag "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}"
   Deploy:
     runs-on: ubuntu-latest
     if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
