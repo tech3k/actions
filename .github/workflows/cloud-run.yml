@@ -114,9 +114,9 @@ jobs:
         id: deploy
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
-          tag: ${{ ((github.event_name == 'pull_request_target' || github.event_name == 'pull_request') && steps.timestamp.outputs.timestamp) || '' }}
+          tag: ${{ steps.timestamp.outputs.timestamp }}
           no_traffic: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
-          tag_traffic: ${{ ((github.event_name == 'pull_request_target' || github.event_name == 'pull_request') && 0) || 100 }}
+          tag_traffic: ${{ ((github.event_name == 'pull_request_target' || github.event_name == 'pull_request') && format('{0}=0', steps.timestamp.outputs.timestamp)) || format('{0}=100', steps.timestamp.outputs.timestamp) }}
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.RUN_REGION }}
           image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}'
