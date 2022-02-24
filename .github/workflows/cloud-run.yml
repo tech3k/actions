@@ -116,7 +116,7 @@ jobs:
         with:
           tag: ${{ ((github.event_name == 'pull_request_target' || github.event_name == 'pull_request') && steps.timestamp.outputs.timestamp) || '' }}
           no_traffic: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
-          tag_traffic: ${{ ((github.event_name == 'pull_request_target' || github.event_name == 'pull_request') ** 0) || 100 }}
+          tag_traffic: ${{ ((github.event_name == 'pull_request_target' || github.event_name == 'pull_request') && 0) || 100 }}
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.RUN_REGION }}
           image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}'
