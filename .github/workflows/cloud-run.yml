@@ -111,7 +111,8 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
       - name: Deploy
         id: deploy
-        run: gcloud run deploy "${{ env.SERVICE_NAME }}" --quiet --region "${{ env.RUN_REGION }}" --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" --platform "managed" --allow-unauthenticated | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*'
+        run: |-
+          gcloud run deploy "${{ env.SERVICE_NAME }}" --quiet --region "${{ env.RUN_REGION }}" --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" --platform "managed" --allow-unauthenticated | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*'
       - name: Set Deployment url
         id: deployUrl
         run: cat gcr.txt
