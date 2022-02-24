@@ -9,7 +9,7 @@ on:
 
 jobs:
   BumpVersion:
-    if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
+    if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out
