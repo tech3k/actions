@@ -30,4 +30,5 @@ jobs:
           extends: |
             semantic-release-npm-github-publish
         env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
