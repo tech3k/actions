@@ -93,7 +93,7 @@ jobs:
     if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     environment:
       name: ${{ (github.ref_name == 'main' && 'Production') || ((github.event_name != 'pull_request_target' && github.event_name != 'pull_request') && 'Staging') || 'Preview' }}
-      url: ${{ steps.deploy.outputs.CLOUD_URL }}
+      url: ${{ steps.deployUrl.outputs.CLOUD_URL }}
     needs:
       - Setup
       - Test
@@ -111,7 +111,10 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
       - name: Deploy
         id: deploy
-        run: gcloud run deploy "${{ env.SERVICE_NAME }}" --quiet --region "${{ env.RUN_REGION }}" --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" --platform "managed" --allow-unauthenticated | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' > gcr.txt && echo "::set-output name=CLOUD_URL::$(cat gcr.txt)"
+        run: gcloud run deploy "${{ env.SERVICE_NAME }}" --quiet --region "${{ env.RUN_REGION }}" --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" --platform "managed" --allow-unauthenticated | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' > gcr.txt
+      - name: Set Deployment url
+        id: deployUrl
+        run: cat gcr.txt
         # run: echo ${{ steps.deploy.outputs.stdout }}
         # run: CLOUD_URL=$(echo "${{ steps.deploy.outputs.stdout }}" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && echo "::set-output name=CLOUD_URL::$CLOUD_URL"
       # - name: OutputUrl
