@@ -93,7 +93,7 @@ jobs:
     if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     environment:
       name: ${{ (github.ref_name == 'main' && 'Production') || ((github.event_name != 'pull_request_target' && github.event_name != 'pull_request') && 'Staging') || 'Preview' }}
-      url: ${{ steps.Deploy.outputs.CLOUD_URL }}
+      url: ${{ steps.OutputUrl.outputs.CLOUD_URL }}
     needs:
       - Setup
       - Test
@@ -117,8 +117,8 @@ jobs:
             --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" \
             --platform "managed" \
             --allow-unauthenticated") && \
-          CLOUD_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && \
-          echo "::set-output name=CLOUD_URL::$CLOUD_URL" && echo "$OUTPUT"
+      - name: OutputUrl
+        run: CLOUD_URL=$(echo "${{ jobs.Deploy.ouputs }}" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && echo "::set-output name=CLOUD_URL::$CLOUD_URL"
 
   Skip:
     runs-on: ubuntu-latest
