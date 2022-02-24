@@ -117,7 +117,7 @@ jobs:
             --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" \
             --platform "managed" \
             --allow-unauthenticated) && \
-          CLOUD_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*') && \
+          CLOUD_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && \
           echo "::set-output name=CLOUD_URL::$CLOUD_URL" && echo "$OUTPUT"
 
   Skip:
