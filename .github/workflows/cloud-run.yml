@@ -65,9 +65,6 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
-    environment:
-      name: ${{ (github.ref_name == 'main' && 'Production') || ((github.event_name != 'pull_request_target' && github.event_name != 'pull_request') && 'Staging') || 'Preview' }}
-      url: ${{ steps.deployment_status.outputs.url }}
     needs:
       - Setup
       - Test
@@ -112,8 +109,8 @@ jobs:
         run: |-
           gcloud run deploy "${{ env.SERVICE_NAME }}" \
             --quiet \
-            --region "$RUN_REGION" \
-            --image "gcr.io/$PROJECT_ID/${{ env.SERVICE_NAME }}:$GITHUB_SHA" \
+            --region "${{ env.RUN_REGION }}" \
+            --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:$GITHUB_SHA" \
             --platform "managed" \
             --allow-unauthenticated
 
