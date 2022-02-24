@@ -84,8 +84,8 @@ jobs:
           key: ${{ needs.Setup.outputs.cachepath }}
       - uses: google-github-actions/setup-gcloud@master
         with:
-          service_account_key: $RUN_SA_KEY
-          project_id: $PROJECT_ID
+          service_account_key: ${{ env.RUN_SA_KEY }}
+          project_id: ${{ env.PROJECT_ID }}
       - name: Build
         run: |-
           gcloud builds submit \
