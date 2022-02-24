@@ -112,12 +112,12 @@ jobs:
       - name: Deploy
         id: deploy
         run: |-
-          CLOUD_URL=$(gcloud run deploy "${{ env.SERVICE_NAME }}" \
+          echo "::set-output name=CLOUD_URL::$(gcloud run deploy "${{ env.SERVICE_NAME }}" \
             --quiet \
             --region "${{ env.RUN_REGION }}" \
             --image "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" \
             --platform "managed" \
-            --allow-unauthenticated | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && echo $CLOUD_URL
+            --allow-unauthenticated | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*')"
         # run: echo ${{ steps.deploy.outputs.stdout }}
         # run: CLOUD_URL=$(echo "${{ steps.deploy.outputs.stdout }}" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*') && echo "::set-output name=CLOUD_URL::$CLOUD_URL"
       # - name: OutputUrl
