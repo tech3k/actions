@@ -1,0 +1,111 @@
+name: Cloud Run Deployment
+on:
+  workflow_call:
+    inputs:
+      SERVICE_NAME:
+        required: false
+        type: string
+    secrets:
+      RUN_PROJECT_PRODUCTION:
+        required: true
+      RUN_PROJECT_STAGING:
+        required: true
+      RUN_SA_KEY:
+        required: true
+
+jobs:
+  Setup:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') ||
+      (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]')
+    outputs:
+      cachepath: ${{ steps.generate_cache_path.outputs.cachepath }}
+    steps:
+      - name: Checkout Latest Version
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: actions/checkout@v2
+      - name: Checkout Latest Version (PR)
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Generate Cache Path
+        id: generate_cache_path
+        run: echo "::set-output name=cachepath::${{ runner.os }}-${{ github.sha }}-${{ github.run_attempt }}-yarn-${{ hashFiles('**/yarn.lock') }}"
+      - uses: actions/cache@v2
+        with:
+          path: ./**/*
+          key: ${{ steps.generate_cache_path.outputs.cachepath }}
+      - name: Install Dependencies
+        run: yarn install
+
+  Test:
+    runs-on: ubuntu-latest
+    needs: Setup
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: ./**/*
+          key: ${{ needs.Setup.outputs.cachepath }}
+      - name: Test
+        run: yarn test
+
+  Lint:
+    runs-on: ubuntu-latest
+    needs: Setup
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: ./**/*
+          key: ${{ needs.Setup.outputs.cachepath }}
+      - name: Lint
+        run: yarn lint
+
+  Deploy:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
+    environment:
+      name: ${{ (github.ref_name == 'main' && 'Production') || ((github.event_name != 'pull_request_target' && github.event_name != 'pull_request') && 'Staging') || 'Preview' }}
+      url: ${{ steps.deployment_status.outputs.url }}
+    needs:
+      - Setup
+      - Test
+      - Lint
+    env:
+      PROJECT_ID: ${{ (github.ref_name == 'main' && secrets.RUN_PROJECT_PRODUCTION) || secrets.RUN_PROJECT_STAGING }}
+      RUN_REGION: europe-west2
+      SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+      RUN_SA_KEY: ${{ secrets.RUN_SA_KEY }}
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: ./**/*
+          key: ${{ needs.Setup.outputs.cachepath }}
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ RUN_SA_KEY }}
+          project_id: ${{ PROJECT_ID }}
+      - name: Build
+        run: |-
+          gcloud builds submit \
+            --quiet \
+            --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA"
+      - name: Deploy
+        run: |-
+          gcloud run deploy "$SERVICE_NAME" \
+            --quiet \
+            --region "$RUN_REGION" \
+            --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
+            --platform "managed" \
+            --allow-unauthenticated
+
+  SkipDeploy:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
+    needs:
+      - Setup
+      - Test
+      - Lint
+    steps:
+      - run: echo "Deployment skipped as we are in a pull request"
