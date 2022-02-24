@@ -111,7 +111,7 @@ jobs:
         id: deploy
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
-          tag: ${{ $(date +%s) }}
+          tag: ${{ (date +%s) }}
           no_traffic: ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.RUN_REGION }}
