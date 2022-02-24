@@ -62,7 +62,7 @@ jobs:
       - name: Lint
         run: yarn lint
 
-  Deploy:
+  Build:
     runs-on: ubuntu-latest
     if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     environment:
@@ -90,13 +90,30 @@ jobs:
         run: |-
           gcloud builds submit \
             --quiet \
-            --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA"
+            --tag "gcr.io/$PROJECT_ID/${{ env.SERVICE_NAME }}:$GITHUB_SHA"
+  Deploy:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
+    environment:
+      name: ${{ (github.ref_name == 'main' && 'Production') || ((github.event_name != 'pull_request_target' && github.event_name != 'pull_request') && 'Staging') || 'Preview' }}
+      url: ${{ steps.deployment_status.outputs.url }}
+    needs:
+      - Setup
+      - Test
+      - Lint
+      - Deploy
+    env:
+      PROJECT_ID: ${{ (github.ref_name == 'main' && secrets.RUN_PROJECT_PRODUCTION) || secrets.RUN_PROJECT_STAGING }}
+      RUN_REGION: europe-west2
+      SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+      RUN_SA_KEY: ${{ secrets.RUN_SA_KEY }}
+    steps:
       - name: Deploy
         run: |-
-          gcloud run deploy "$SERVICE_NAME" \
+          gcloud run deploy "${{ env.SERVICE_NAME }}" \
             --quiet \
             --region "$RUN_REGION" \
-            --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
+            --image "gcr.io/$PROJECT_ID/${{ env.SERVICE_NAME }}:$GITHUB_SHA" \
             --platform "managed" \
             --allow-unauthenticated
 
