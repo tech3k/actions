@@ -126,9 +126,9 @@ jobs:
         run: gcloud run services update-traffic ${{ env.SERVICE_NAME }} --region="${{ env.RUN_REGION }}" --to-tags ${{ steps.timestamp.outputs.timestamp }}=100
       - name: Generate URL
         id: generateURL
-        if: (github.event_name != 'pull_request_target' && github.event_name != 'pull_request')
-        run: echo "::set-output name=url::format("{0}", $(echo "${{ steps.deploy.outputs.url }}" | sed 's/${{ steps.timestamp.outputs.timestamp }}---//g'))"
-      - name: Generate URL
-        id: generateURL
-        if: (github.event_name == 'pull_request_target' || github.event_name == 'pull_request')
-        run: echo "::set-output name=url::${{ steps.deploy.outputs.url }}"
+        run: |
+          if ${{ (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }} == true; then
+            echo "::set-output name=url::format("{0}", $(echo "${{ steps.deploy.outputs.url }}" | sed 's/${{ steps.timestamp.outputs.timestamp }}---//g'))"
+          else
+          echo "::set-output name=url::${{ steps.deploy.outputs.url }}"
+          fi
