@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ (github.ref_name == 'main' && 'Production') || ((github.event_name != 'pull_request_target' && github.event_name != 'pull_request') && 'Staging') || 'Preview' }}
-      url: ${{ steps.deploy.outputs.url }}
+      url: ${{ steps.generateURL.outputs.url }}
     needs:
       - Setup
       - Test
@@ -124,3 +124,6 @@ jobs:
       - name: Send Traffic
         if: (github.event_name != 'pull_request_target' && github.event_name != 'pull_request')
         run: gcloud run services update-traffic ${{ env.SERVICE_NAME }} --region="${{ env.RUN_REGION }}" --to-tags ${{ steps.timestamp.outputs.timestamp }}=100
+      - name: Generate URL
+        id: generateURL
+        run: echo "::set-output name=url::format("{0}", $(echo "${{ steps.deploy.outputs.url }}" | sed 's/${{ steps.timestamp.outputs.timestamp }}---//g'))"
