@@ -12,6 +12,8 @@ on:
         required: true
       RUN_SA_KEY:
         required: true
+      SERVICE_NAME:
+        required: false
 
 jobs:
   Setup:
@@ -71,7 +73,7 @@ jobs:
     env:
       PROJECT_ID: ${{ (github.ref_name == 'main' && secrets.RUN_PROJECT_PRODUCTION) || secrets.RUN_PROJECT_STAGING }}
       RUN_REGION: europe-west2
-      SERVICE_NAME: ${{ inputs.SERVICE_NAME || github.event.repository.name }}
+      SERVICE_NAME: ${{ inputs.SERVICE_NAME || (secrets.SERVICE_NAME || github.event.repository.name) }}
       RUN_SA_KEY: ${{ secrets.RUN_SA_KEY }}
     steps:
       - uses: actions/cache@v2
@@ -100,7 +102,7 @@ jobs:
     env:
       PROJECT_ID: ${{ (github.ref_name == 'main' && secrets.RUN_PROJECT_PRODUCTION) || secrets.RUN_PROJECT_STAGING }}
       RUN_REGION: europe-west2
-      SERVICE_NAME: ${{ inputs.SERVICE_NAME || github.event.repository.name }}
+      SERVICE_NAME: ${{ inputs.SERVICE_NAME || (secrets.SERVICE_NAME || github.event.repository.name) }}
       RUN_SA_KEY: ${{ secrets.RUN_SA_KEY }}
     steps:
       - name: Timestamp
