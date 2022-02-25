@@ -25,6 +25,8 @@ jobs:
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
         with:
+          extends: |
+            semantic-release-npm-github-publish
           branches: |
             [
               'main',
@@ -33,8 +35,6 @@ jobs:
                 prerelease: true
               }
             ]
-          extends: |
-            semantic-release-npm-github-publish
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
