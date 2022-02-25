@@ -130,7 +130,7 @@ jobs:
         id: generateURL
         run: |
           if ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }} == true; then
-            echo "::set-output name=url::$(echo "https://t1645772783---test-microservice-om4awitlla-nw.a.run.app" | sed 's/t1645772783---//g')"
+            echo "::set-output name=url::$(echo "${{ steps.deploy.outputs.url }}" | sed 's/${{ steps.timestamp.outputs.timestamp }}---//g')"
           else
           echo "::set-output name=url::${{ steps.deploy.outputs.url }}"
           fi
