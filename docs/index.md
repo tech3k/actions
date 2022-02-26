@@ -68,6 +68,8 @@ In each job to be ran the initial defined name (i.e. `Version` and `Review` in t
 
 ## Job Descriptions
 
+**Coming Soon**
+
 ## Ready Made Templates
 
 The links below will take you to some ready made templates that can just be copy and pasted into the appropriate repository. They should work out of the box as long as all secrets have been correctly added.
