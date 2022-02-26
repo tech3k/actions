@@ -57,3 +57,11 @@ In each job to be ran the initial defined name (i.e. `Version` and `Review` in t
 | **uses**    | This is the link to the Managed Workflow being used                              |
 | **secrets** | This section holds a list of secrets that will be passed to the Managed Workflow |
 | **with**    | This section shows any hardcoded values to be passed through                     |
+
+## Job Descriptions
+
+## Ready Mande Templates
+
+The links below will take you to some ready made templates that can just be copy and pasted into the appropriate repository. They should work out of the box as long as all secrets have been correctly added.
+
+[Netlify](templates.md)
