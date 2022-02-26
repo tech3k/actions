@@ -2,6 +2,8 @@
 
 ## NPM Package
 
+{% raw %}
+
 ```
 name: Deploy NPM Package
 on:
@@ -29,5 +31,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 ```
+
+{% endraw %}
 
 ## Netlify

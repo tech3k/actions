@@ -64,5 +64,5 @@ In each job to be ran the initial defined name (i.e. `Version` and `Review` in t
 
 The links below will take you to some ready made templates that can just be copy and pasted into the appropriate repository. They should work out of the box as long as all secrets have been correctly added.
 
-[NPM Package](templates.md)
+[NPM Package](templates.md#npm-package)
 [Netlify](templates.md#netlify)
