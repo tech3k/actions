@@ -1,4 +1,4 @@
-# Tech3k Managed Deployment Scripts
+# Managed Deployment Scripts
 
 This page and its links describes how you can use each part of the Managed deployment scripts to ensure that deployment for all projects is extremely easy.
 
