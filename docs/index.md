@@ -1,8 +1,8 @@
-## Tech3k Managed Deployment Scripts
+# Tech3k Managed Deployment Scripts
 
 This page and its links describes how you can use each part of the Managed deployment scripts to ensure that deployment for all projects is extremely easy.
 
-### Initial Setup
+## Initial Setup
 
 To install a Managed Deploy Script the first step is to create a default github action script. First create a blank file in the `.github/workflows` directory. We suggest this be called `deploy.yml` for conventions sake.
 
@@ -26,3 +26,34 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
 ```
+
+## Jobs
+
+Jobs are tasks that will be ran during the deployment script. As we are using Managed Workflows these jobs should only define the workflow that will be ran, some variables or secrets that will be passed to the workflow, and possibly an order to be ran in.
+
+The jobs section should look something like the following...
+
+```
+jobs:
+  Version:
+    uses: tech3k/actions/.github/workflows/bump-version.yml@main
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      PAT: ${{ secrets.PAT }}
+
+  Review:
+    needs: Version
+    uses: tech3k/actions/.github/workflows/review-request.yml@main
+    secrets:
+      PAT: ${{ secrets.PAT }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+```
+
+In each job to be ran the initial defined name (i.e. `Version` and `Review` in the code above) are identifiers that can be changed to whatever you wish, but again we recommend keeping these to the standard we specify on this page.
+
+| Option      | Description                                                                      |
+| ----------- | -------------------------------------------------------------------------------- |
+| **needs**   | This job will not run unless all jobs in the needs section have been ran         |
+| **uses**    | This is the link to the Managed Workflow being used                              |
+| **secrets** | This section holds a list of secrets that will be passed to the Managed Workflow |
+| **with**    | This section shows any hardcoded values to be passed through                     |
