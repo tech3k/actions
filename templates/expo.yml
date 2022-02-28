@@ -1,0 +1,35 @@
+name: Deploy Website
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  Version:
+    uses: tech3k/actions/.github/workflows/bump-version.yml@main
+    with:
+      IS_EXPO: true
+    secrets:
+      PAT: ${{ secrets.PAT }}
+
+  Expo:
+    needs: Version
+    uses: tech3k/actions/.github/workflows/expo.yml@main
+    with:
+      APPLE_APP_ID: 123456
+    secrets:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
+      EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
+
+  Review:
+    needs: Netlify
+    uses: tech3k/actions/.github/workflows/review-request.yml@main
+    secrets:
+      PAT: ${{ secrets.PAT }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

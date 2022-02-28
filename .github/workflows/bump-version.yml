@@ -1,6 +1,10 @@
 name: Bump Version
 on:
   workflow_call:
+    inputs:
+      IS_EXPO:
+        required: false
+        type: boolean
     secrets:
       PAT:
         required: true
