@@ -28,7 +28,7 @@ jobs:
       EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
 
   Review:
-    needs: Netlify
+    needs: Expo
     uses: tech3k/actions/.github/workflows/review-request.yml@main
     secrets:
       PAT: ${{ secrets.PAT }}
