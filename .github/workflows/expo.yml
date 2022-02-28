@@ -1,0 +1,103 @@
+name: Expo Deployment
+on:
+  workflow_call:
+    inputs:
+      APPLE_APP_ID:
+        required: true
+        type: string
+    secrets:
+      EXPO_TOKEN:
+        required: true
+      EXPO_APPLE_PASSWORD:
+        required: true
+      EXPO_APPLE_ID:
+        required: true
+
+jobs:
+  Skip:
+    if: ${{ github.ref_name != 'main' && github.ref_name != 'staging' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Skipping as we are not a main or staging branch"
+  BuildIos:
+    if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Build on EAS
+        run: npx eas-cli build --platform ios --non-interactive --profile ${{ github.ref_name }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+  BuildAndroid:
+    if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Build on EAS
+        run: npx eas-cli build --platform android --non-interactive --profile ${{ github.ref_name }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+  DeployIos:
+    if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
+    needs:
+      - BuildIos
+      - BuildAndroid
+    name: Submit iOS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Submit to AppStore
+        run: npx eas-cli submit -p ios --latest --apple-id=${{ secrets.EXPO_APPLE_ID }} --asc-app-id=${{ inputs.APPLE_APP_ID }}
+        env:
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+  DeployAndroid:
+    if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
+    needs:
+      - BuildIos
+      - BuildAndroid
+    name: Submit Android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Submit to Google Play
+        run: npx eas-cli submit -p android --latest --key=key.json --track=beta
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+  publishChanges:
+    if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
+    needs:
+      - DeployIos
+      - DeployAndroid
+    name: Publish Changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install dependencies
+        run: yarn install
+      - name: Publish
+        run: npx expo-cli publish --release-channel ${{ github.ref_name }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
