@@ -6,6 +6,8 @@ on:
         required: true
         type: string
     secrets:
+      ENV:
+        required: false
       NETLIFY_AUTH_TOKEN:
         required: true
       NETLIFY_SITE_ID:
@@ -71,7 +73,7 @@ jobs:
             ./**/build/*
           key: ${{ steps.build_cache_path.outputs.cachepath }}
       - name: Build
-        run: yarn build
+        run: ${{ (github.ref_name == 'main' && secrets.ENV) || secrets.STAGING_ENV }} yarn build
 
   Deploy:
     runs-on: ubuntu-latest
