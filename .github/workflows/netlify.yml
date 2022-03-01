@@ -73,7 +73,7 @@ jobs:
             ./**/build/*
           key: ${{ steps.build_cache_path.outputs.cachepath }}
       - name: Build
-        run: ${{ (github.ref_name == 'main' && secrets.ENV) || secrets.STAGING_ENV }} yarn build
+        run: ${{ secrets.ENV }} yarn build
 
   Deploy:
     runs-on: ubuntu-latest
