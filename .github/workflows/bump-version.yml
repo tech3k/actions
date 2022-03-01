@@ -21,6 +21,8 @@ jobs:
     if: ${{ (github.event_name != 'pull_request_target' && github.event_name != 'pull_request') }}
     runs-on: ubuntu-latest
     steps:
+      - name: Env test
+        run: echo "${{ env.FAUNA_WEB_TOKEN_STAGING }}"
       - name: Check out
         uses: actions/checkout@v2
         with:
