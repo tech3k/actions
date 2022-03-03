@@ -34,7 +34,7 @@ jobs:
           semantic_version: 16
           extends: |
             semantic-release-npm-github-publish
-            ${{ input.IS_EXPO && 'semantic-release-expo' || '' }}
+            ${{ inputs.IS_EXPO && 'semantic-release-expo' || '' }}
           branches: |
             [
               'main',
