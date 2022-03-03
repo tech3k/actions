@@ -32,9 +32,8 @@ jobs:
         uses: cycjimmy/semantic-release-action@v2
         with:
           semantic_version: 16
-          extra_plugins: |
-            @semantic-release/changelog@3.0.0
-            @semantic-release/git
+          extends: |
+            semantic-release-npm-github-publish
           branches: |
             [
               'main',
