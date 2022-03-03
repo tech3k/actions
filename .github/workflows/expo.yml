@@ -75,7 +75,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Submit to Google Play
-        run: npx eas-cli submit -p android --latest --key=key.json --track=beta
+        run: npx eas-cli submit -p android --latest --profile=${{ github.ref_name }}
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
