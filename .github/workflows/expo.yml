@@ -57,7 +57,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Submit to AppStore
-        run: npx eas-cli submit -p ios --latest
+        run: npx eas-cli submit -p ios --latest --profile=${{ github.ref_name }}
         env:
           EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
