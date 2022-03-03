@@ -28,12 +28,15 @@ jobs:
           persist-credentials: false
       - name: Install NPM Dependancies
         run: yarn install
+      - name: Bump Expo Versions
+        if: ${{ inputs.IS_EXPO || false }}
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
         with:
           semantic_version: 16
           extends: |
             semantic-release-npm-github-publish
+            ${{ input.IS_EXPO && 'semantic-release-expo' || '' }}
           branches: |
             [
               'main',
