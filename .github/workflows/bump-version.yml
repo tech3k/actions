@@ -28,6 +28,8 @@ jobs:
           persist-credentials: false
       - name: Install NPM Dependancies
         run: yarn install
+      - name: Install Semantic Plugins
+        run: npm install semantic-release-expo --global
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
         with:
