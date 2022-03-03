@@ -83,7 +83,7 @@ jobs:
     if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
     needs:
       - DeployIos
-      - DeployAndroid
+      - DeployAndroids
     name: Publish Changes
     runs-on: ubuntu-latest
     steps:
