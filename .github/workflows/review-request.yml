@@ -21,9 +21,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Set the PR to auto merge
-        run: |
-          gh pr merge ${{ github.event.pull_request.html_url }} \
-              ${{ (github.base_ref == 'main' && '-m') || '-s' }} --auto
+        run: gh pr merge ${{ github.event.pull_request.html_url }} -m --auto
       - name: Create PR review request
         run: |
           gh pr edit ${{ github.event.pull_request.html_url }} \
