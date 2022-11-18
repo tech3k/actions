@@ -48,7 +48,6 @@ jobs:
     if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
     needs:
       - BuildIos
-      - BuildAndroid
     name: Submit iOS
     runs-on: ubuntu-latest
     steps:
@@ -65,7 +64,6 @@ jobs:
   DeployAndroid:
     if: ${{ github.ref_name == 'main' || github.ref_name == 'staging' }}
     needs:
-      - BuildIos
       - BuildAndroid
     name: Submit Android
     runs-on: ubuntu-latest
