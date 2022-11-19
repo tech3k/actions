@@ -27,6 +27,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
       - name: Prebuild
         run: yarn expo prebuild --clean
       - name: Build on EAS
@@ -41,6 +45,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
       - name: Prebuild
         run: yarn expo prebuild --clean
       - name: Build on EAS
@@ -59,6 +67,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
       - name: Submit to AppStore
         run: yarn expo submit -p ios --latest --profile=${{ github.ref_name }}
         env:
@@ -76,6 +88,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
       - name: Submit to Google Play
         run: yarn expi submit -p android --latest --profile=${{ github.ref_name }}
         env:
@@ -93,6 +109,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
