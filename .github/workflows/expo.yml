@@ -27,6 +27,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref_name }}
+      - name: Prebuild
+        run: npx expo-cli prebuild
       - name: Build on EAS
         run: npx eas-cli build --platform ios --non-interactive --profile ${{ github.ref_name }}
         env:
@@ -39,6 +41,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref_name }}
+      - name: Prebuild
+        run: npx expo-cli prebuild
       - name: Build on EAS
         run: npx eas-cli build --platform android --non-interactive --profile ${{ github.ref_name }}
         env:
