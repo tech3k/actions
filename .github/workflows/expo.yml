@@ -28,9 +28,9 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Prebuild
-        run: npx expo-cli prebuild --clean
+        run: yarn expo prebuild --clean
       - name: Build on EAS
-        run: npx eas-cli build --platform ios --non-interactive --profile ${{ github.ref_name }}
+        run: yarn expo build --platform ios --non-interactive --profile ${{ github.ref_name }}
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
   BuildAndroid:
@@ -42,9 +42,9 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Prebuild
-        run: npx expo-cli prebuild --clean
+        run: yarn expo prebuild --clean
       - name: Build on EAS
-        run: npx eas-cli build --platform android --non-interactive --profile ${{ github.ref_name }}
+        run: yarn expo build --platform android --non-interactive --profile ${{ github.ref_name }}
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
@@ -60,7 +60,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Submit to AppStore
-        run: npx eas-cli submit -p ios --latest --profile=${{ github.ref_name }}
+        run: yarn expo submit -p ios --latest --profile=${{ github.ref_name }}
         env:
           EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
@@ -77,7 +77,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Submit to Google Play
-        run: npx eas-cli submit -p android --latest --profile=${{ github.ref_name }}
+        run: yarn expi submit -p android --latest --profile=${{ github.ref_name }}
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
@@ -100,6 +100,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Publish
-        run: npx expo-cli publish --release-channel ${{ github.ref_name }}
+        run: yarn expo publish --release-channel ${{ github.ref_name }}
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
