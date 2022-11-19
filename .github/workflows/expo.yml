@@ -28,7 +28,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Prebuild
-        run: npx expo-cli prebuild
+        run: npx expo-cli prebuild --clean
       - name: Build on EAS
         run: npx eas-cli build --platform ios --non-interactive --profile ${{ github.ref_name }}
         env:
@@ -42,7 +42,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Prebuild
-        run: npx expo-cli prebuild
+        run: npx expo-cli prebuild --clean
       - name: Build on EAS
         run: npx eas-cli build --platform android --non-interactive --profile ${{ github.ref_name }}
         env:
